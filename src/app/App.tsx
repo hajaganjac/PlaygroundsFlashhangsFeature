@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { ChevronDown, MessageCircle, Bell, BellOff, Zap } from "lucide-react";
+import { ChevronDown, MessageCircle, Bell, BellOff, Zap, Users } from "lucide-react";
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface FlashHang {
@@ -38,12 +38,27 @@ const MEMBERS: Member[] = [
   { id: "m10", name: "Yuki Tanaka", initials: "YT" },
   { id: "m11", name: "Cleo Vance",  initials: "CV" },
 ];
+
+const MEMBER_GRADIENTS: Record<string, string> = {
+  m1:  "linear-gradient(135deg,#6366f1,#8b5cf6)",
+  m2:  "linear-gradient(135deg,#ec4899,#f43f5e)",
+  m3:  "linear-gradient(135deg,#14b8a6,#06b6d4)",
+  m4:  "linear-gradient(135deg,#f59e0b,#f97316)",
+  m5:  "linear-gradient(135deg,#10b981,#84cc16)",
+  m6:  "linear-gradient(135deg,#e879f9,#a855f7)",
+  m7:  "linear-gradient(135deg,#38bdf8,#818cf8)",
+  m8:  "linear-gradient(135deg,#fb7185,#f43f5e)",
+  m9:  "linear-gradient(135deg,#a3e635,#4ade80)",
+  m10: "linear-gradient(135deg,#c084fc,#818cf8)",
+  m11: "linear-gradient(135deg,#67e8f9,#a78bfa)",
+};
+
 const VIBES = [
-  { label: "Chill",      emoji: "😌", bg: "rgba(59,130,246,0.2)",  border: "rgba(59,130,246,0.35)",  text: "#93c5fd" },
-  { label: "Networking", emoji: "🤝", bg: "rgba(74,222,128,0.18)", border: "rgba(74,222,128,0.35)",  text: "#86efac" },
-  { label: "Creative",   emoji: "🎨", bg: "rgba(234,179,8,0.18)",  border: "rgba(234,179,8,0.35)",   text: "#fcd34d" },
-  { label: "Deep Talk",  emoji: "💬", bg: "rgba(168,85,247,0.2)",  border: "rgba(168,85,247,0.4)",   text: "#c084fc" },
-  { label: "Energy",     emoji: "🔥", bg: "rgba(239,68,68,0.18)",  border: "rgba(239,68,68,0.35)",   text: "#fca5a5" },
+  { label: "Chill",      emoji: "😌", bg: "rgba(59,130,246,0.2)",  border: "rgba(59,130,246,0.35)",  text: "#93c5fd", accent: "#3b82f6" },
+  { label: "Networking", emoji: "🤝", bg: "rgba(74,222,128,0.18)", border: "rgba(74,222,128,0.35)",  text: "#86efac", accent: "#4ade80" },
+  { label: "Creative",   emoji: "🎨", bg: "rgba(234,179,8,0.18)",  border: "rgba(234,179,8,0.35)",   text: "#fcd34d", accent: "#eab308" },
+  { label: "Deep Talk",  emoji: "💬", bg: "rgba(168,85,247,0.2)",  border: "rgba(168,85,247,0.4)",   text: "#c084fc", accent: "#a855f7" },
+  { label: "Energy",     emoji: "🔥", bg: "rgba(239,68,68,0.18)",  border: "rgba(239,68,68,0.35)",   text: "#fca5a5", accent: "#ef4444" },
 ];
 const LOCATIONS = [
   { label: "🌿 Garden",     value: "Festival Garden" },
@@ -64,6 +79,9 @@ const INITIAL_HANGS: FlashHang[] = [
 function getMember(id: string): Member {
   return MEMBERS.find(m => m.id === id) ?? { id, name: "You", initials: "ME" };
 }
+function getMemberGradient(id: string): string {
+  return MEMBER_GRADIENTS[id] ?? "linear-gradient(135deg,#475569,#334155)";
+}
 function getVibe(label?: string) {
   return VIBES.find(v => v.label === label);
 }
@@ -77,7 +95,7 @@ function durationToMinutes(d: string): number {
   return 60;
 }
 
-/* ─── Toast ──��───────────────────────────────────────────── */
+/* ─── Toast ──────────────────────────────────────────────── */
 function Toast({ message, onDone }: { message: string; onDone: () => void }) {
   useEffect(() => { const t = setTimeout(onDone, 2800); return () => clearTimeout(t); }, [onDone]);
   const el = typeof document !== "undefined" ? document.body : null;
@@ -104,6 +122,113 @@ function Toast({ message, onDone }: { message: string; onDone: () => void }) {
       </motion.div>
     </AnimatePresence>,
     el
+  );
+}
+
+/* ─── Floating Orbs ──────────────────────────────────────── */
+function FloatingOrbs() {
+  return (
+    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
+      <motion.div
+        animate={{ x: [0, 55, -30, 20, 0], y: [0, -45, 70, -20, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          position: "absolute", top: -140, left: -100,
+          width: 520, height: 520, borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(124,58,237,0.32) 0%, transparent 70%)",
+          filter: "blur(12px)",
+        }}
+      />
+      <motion.div
+        animate={{ x: [0, -65, 35, -15, 0], y: [0, 55, -50, 30, 0] }}
+        transition={{ duration: 28, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+        style={{
+          position: "absolute", bottom: -100, right: -80,
+          width: 460, height: 460, borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(217,70,239,0.26) 0%, transparent 70%)",
+          filter: "blur(12px)",
+        }}
+      />
+      <motion.div
+        animate={{ x: [0, 40, -55, 25, 0], y: [0, -35, 25, -45, 0] }}
+        transition={{ duration: 34, repeat: Infinity, ease: "easeInOut", delay: 9 }}
+        style={{
+          position: "absolute", top: "38%", left: "55%",
+          width: 320, height: 320, borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(56,189,248,0.14) 0%, transparent 70%)",
+          filter: "blur(18px)",
+        }}
+      />
+      <motion.div
+        animate={{ x: [0, -30, 50, -10, 0], y: [0, 40, -30, 20, 0] }}
+        transition={{ duration: 40, repeat: Infinity, ease: "easeInOut", delay: 15 }}
+        style={{
+          position: "absolute", top: "15%", right: "-5%",
+          width: 280, height: 280, borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(168,85,247,0.16) 0%, transparent 70%)",
+          filter: "blur(20px)",
+        }}
+      />
+    </div>
+  );
+}
+
+/* ─── Festival Ticker ────────────────────────────────────── */
+function FestivalTicker({ hangCount }: { hangCount: number }) {
+  const items = [
+    "⚡ SIGNAL FEST 2026",
+    `${hangCount} hang${hangCount !== 1 ? "s" : ""} live`,
+    "247 people at the festival",
+    "drop in · show up · connect",
+    "spontaneous meetups, zero planning",
+    "your people are nearby",
+  ];
+  const text = items.join("   ·   ");
+  const doubled = text + "   ·   " + text;
+  return (
+    <>
+      <style>{`
+        @keyframes ticker-scroll {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .fh-ticker { animation: ticker-scroll 28s linear infinite; display: inline-block; white-space: nowrap; }
+      `}</style>
+      <div style={{
+        overflow: "hidden",
+        borderBottom: "1px solid rgba(255,255,255,0.05)",
+        padding: "9px 0",
+        background: "rgba(0,0,0,0.22)",
+      }}>
+        <div className="fh-ticker" style={{
+          fontSize: 10, fontWeight: 700, color: "#4b5563",
+          letterSpacing: "0.1em", textTransform: "uppercase",
+        }}>
+          {doubled}
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ─── Section Divider ────────────────────────────────────── */
+function SectionDivider({ label }: { label: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0 2px" }}
+    >
+      <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.07))" }} />
+      <span style={{
+        fontSize: 9, fontWeight: 800, color: "#374151",
+        letterSpacing: "0.14em", textTransform: "uppercase",
+        display: "flex", alignItems: "center", gap: 5,
+      }}>
+        <Users size={9} color="#374151" />
+        {label}
+      </span>
+      <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(255,255,255,0.07), transparent)" }} />
+    </motion.div>
   );
 }
 
@@ -140,13 +265,25 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
   const expired  = hang.minutesLeft === 0;
   const visibleJoiners = hang.joiners.slice(0, 3);
   const overflow = hang.joiners.length - 3;
+  const isHot = hang.joiners.length >= 2 && !isMe;
+  const vibe = getVibe(hang.vibe);
+  const avatarGradient = isMe
+    ? "linear-gradient(135deg,#7c3aed,#d946ef)"
+    : getMemberGradient(hang.memberId);
 
-  return (
+  const card = (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10, scale: 0.97 }}
       transition={{ delay: index * 0.07, duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{
+        y: -3,
+        boxShadow: isMe
+          ? "0 0 0 1px rgba(168,85,247,0.25), 0 16px 48px rgba(124,58,237,0.35), 0 0 60px rgba(217,70,239,0.15)"
+          : "0 6px 28px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.09)",
+        transition: { duration: 0.18 },
+      }}
       layout
       style={{
         borderRadius: 20,
@@ -161,24 +298,41 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
           : "0 2px 12px rgba(0,0,0,0.25)",
         overflow: "hidden",
         backdropFilter: "blur(8px)",
+        cursor: "pointer",
       }}
     >
+      {/* Vibe accent strip */}
+      {vibe && (
+        <div style={{
+          height: 2,
+          background: `linear-gradient(90deg, transparent 0%, ${vibe.accent}99 40%, ${vibe.accent}99 60%, transparent 100%)`,
+        }} />
+      )}
+      {!vibe && isMe && (
+        <motion.div
+          animate={{ opacity: [0.4, 0.9, 0.4] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          style={{
+            height: 2,
+            background: "linear-gradient(90deg, transparent, rgba(168,85,247,0.8), rgba(217,70,239,0.8), transparent)",
+          }}
+        />
+      )}
+
       {/* Main row */}
       <div onClick={() => setExpanded(e => !e)}
-        style={{ padding: "14px 16px 12px", cursor: "pointer", userSelect: "none" }}>
+        style={{ padding: "14px 16px 12px", userSelect: "none" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 13 }}>
 
           {/* Avatar */}
           <div style={{
             width: 46, height: 46, borderRadius: "50%", flexShrink: 0,
             display: "flex", alignItems: "center", justifyContent: "center",
-            background: isMe
-              ? "linear-gradient(135deg,#7c3aed,#d946ef)"
-              : "rgba(255,255,255,0.07)",
+            background: avatarGradient,
             border: isMe ? "2px solid rgba(217,70,239,0.5)" : "2px solid rgba(255,255,255,0.09)",
-            fontSize: 13, fontWeight: 800, color: isMe ? "#fff" : "#94a3b8",
+            fontSize: 13, fontWeight: 800, color: "#fff",
             letterSpacing: "-0.02em",
-            boxShadow: isMe ? "0 0 20px rgba(168,85,247,0.5), inset 0 1px 0 rgba(255,255,255,0.2)" : "none",
+            boxShadow: isMe ? "0 0 20px rgba(168,85,247,0.5), inset 0 1px 0 rgba(255,255,255,0.2)" : "0 0 12px rgba(0,0,0,0.3)",
           }}>
             {isMe ? "ME" : member.initials}
           </div>
@@ -190,6 +344,20 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
                 {hang.locEmoji} {hang.location}
               </span>
               {hang.vibe && <VibeBadge label={hang.vibe} />}
+              {isHot && (
+                <motion.span
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                  style={{
+                    fontSize: 10, fontWeight: 800, padding: "2px 7px", borderRadius: 999,
+                    background: "rgba(239,68,68,0.18)", color: "#fca5a5",
+                    border: "1px solid rgba(239,68,68,0.3)", letterSpacing: "0.03em",
+                  }}
+                >
+                  🔥 Hot
+                </motion.span>
+              )}
             </div>
 
             {/* Progress bar */}
@@ -222,16 +390,22 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
                   {visibleJoiners.map((jid, i) => {
                     const m = getMember(jid);
                     return (
-                      <div key={jid} style={{
-                        marginLeft: i === 0 ? 0 : -8, zIndex: visibleJoiners.length - i,
-                        width: 22, height: 22, borderRadius: "50%",
-                        border: "2px solid rgba(12,10,20,1)",
-                        background: "linear-gradient(135deg,rgba(124,58,237,0.5),rgba(168,85,247,0.4))",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        fontSize: 7, fontWeight: 800, color: "#e9d5ff",
-                      }}>
+                      <motion.div
+                        key={jid}
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 500, damping: 22, delay: 0.05 * i }}
+                        style={{
+                          marginLeft: i === 0 ? 0 : -8, zIndex: visibleJoiners.length - i,
+                          width: 22, height: 22, borderRadius: "50%",
+                          border: "2px solid rgba(12,10,20,1)",
+                          background: getMemberGradient(jid),
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          fontSize: 7, fontWeight: 800, color: "#fff",
+                        }}
+                      >
                         {m.initials.slice(0, 1)}
-                      </div>
+                      </motion.div>
                     );
                   })}
                   {overflow > 0 && (
@@ -249,7 +423,9 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
                 </div>
               )}
               <span style={{ fontSize: 11, color: "#475569" }}>
-                {hang.joiners.length > 0 ? `${hang.joiners.length} joining` : "Be first to join!"}
+                {hang.joiners.length > 0
+                  ? <><motion.span key={hang.joiners.length} initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}>{hang.joiners.length}</motion.span> joining</>
+                  : "Be first to join!"}
                 {" · "}{hang.time}
               </span>
             </div>
@@ -260,6 +436,7 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
             {!isMe && (
               <motion.button
                 whileTap={{ scale: 0.88 }}
+                whileHover={{ scale: 1.05 }}
                 onClick={e => { e.stopPropagation(); onJoin(hang.id); }}
                 style={{
                   padding: "7px 15px", borderRadius: 999, border: "none",
@@ -341,10 +518,10 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
                       const m = getMember(jid);
                       return (
                         <span key={jid} style={{
-                          background: "rgba(255,255,255,0.06)",
-                          border: "1px solid rgba(255,255,255,0.08)",
-                          color: "#cbd5e1", fontSize: 12, fontWeight: 600,
+                          background: getMemberGradient(jid),
+                          color: "#fff", fontSize: 12, fontWeight: 700,
                           padding: "4px 10px", borderRadius: 999,
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.25)",
                         }}>
                           {m.initials} {m.name}
                         </span>
@@ -355,7 +532,7 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
               )}
               {isMe ? (
                 <div style={{ display: "flex", gap: 8 }}>
-                  <motion.button whileTap={{ scale: 0.93 }} onClick={() => onBoost(hang.id)} style={{
+                  <motion.button whileTap={{ scale: 0.93 }} whileHover={{ scale: 1.02 }} onClick={() => onBoost(hang.id)} style={{
                     flex: 1, padding: "10px 0", borderRadius: 12,
                     border: "1px solid rgba(168,85,247,0.35)",
                     background: "rgba(168,85,247,0.1)",
@@ -364,7 +541,7 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
                   }}>
                     <Zap size={13} /> Boost +10 min
                   </motion.button>
-                  <motion.button whileTap={{ scale: 0.93 }} onClick={() => onCancel(hang.id)} style={{
+                  <motion.button whileTap={{ scale: 0.93 }} whileHover={{ scale: 1.02 }} onClick={() => onCancel(hang.id)} style={{
                     flex: 1, padding: "10px 0", borderRadius: 12,
                     border: "1px solid rgba(239,68,68,0.25)",
                     background: "rgba(239,68,68,0.07)",
@@ -378,7 +555,7 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
                   <div style={{ fontSize: 11, fontWeight: 600, color: "#475569" }}>Quick message to host</div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {["On my way! 🏃", "Save me a spot! 💜", "5 min away 👋", "Sounds fun! 🎉"].map(qr => (
-                      <motion.button key={qr} whileTap={{ scale: 0.92 }}
+                      <motion.button key={qr} whileTap={{ scale: 0.92 }} whileHover={{ scale: 1.04 }}
                         onClick={() => onToast(`Sent: "${qr}" 📨`)}
                         style={{
                           background: "rgba(255,255,255,0.05)",
@@ -391,7 +568,7 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
                     ))}
                   </div>
                   <div style={{ display: "flex", gap: 8, marginTop: 2 }}>
-                    <motion.button whileTap={{ scale: 0.93 }}
+                    <motion.button whileTap={{ scale: 0.93 }} whileHover={{ scale: 1.02 }}
                       onClick={() => onToast(`Opening chat with ${getMember(hang.memberId).name}...`)}
                       style={{
                         flex: 1, padding: "10px 0", borderRadius: 12,
@@ -404,7 +581,7 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
                       <MessageCircle size={14} />
                       Message {getMember(hang.memberId).name.split(" ")[0]}
                     </motion.button>
-                    <motion.button whileTap={{ scale: 0.9 }} onClick={() => onNotifyToggle(hang.id)} style={{
+                    <motion.button whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }} onClick={() => onNotifyToggle(hang.id)} style={{
                       width: 42, height: 42, borderRadius: 12,
                       border: "1px solid rgba(255,255,255,0.08)",
                       background: hang.notifyMe ? "rgba(251,191,36,0.1)" : "rgba(255,255,255,0.04)",
@@ -424,6 +601,24 @@ function HangCard({ hang, index, onJoin, onBoost, onCancel, onToast, onNotifyTog
       </AnimatePresence>
     </motion.div>
   );
+
+  /* Wrap "me" card in a pulsing glow container */
+  if (isMe) {
+    return (
+      <div style={{ position: "relative" }}>
+        <motion.div
+          animate={{ opacity: [0.35, 0.85, 0.35] }}
+          transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+          style={{
+            position: "absolute", inset: -1, borderRadius: 21, pointerEvents: "none",
+            boxShadow: "0 0 28px rgba(168,85,247,0.35), 0 0 60px rgba(124,58,237,0.18)",
+          }}
+        />
+        {card}
+      </div>
+    );
+  }
+  return card;
 }
 
 /* ─── Creation Form ──────────────────────────────────────── */
@@ -462,7 +657,7 @@ function CreationForm({ onSubmit, onCancel }: {
             {LOCATIONS.map(loc => {
               const active = location === loc.value;
               return (
-                <motion.button key={loc.value} whileTap={{ scale: 0.91 }}
+                <motion.button key={loc.value} whileTap={{ scale: 0.91 }} whileHover={{ scale: 1.03 }}
                   onClick={() => setLocation(loc.value)}
                   style={{
                     padding: "8px 14px", borderRadius: 12,
@@ -491,7 +686,7 @@ function CreationForm({ onSubmit, onCancel }: {
             {DURATIONS.map(d => {
               const active = duration === d;
               return (
-                <motion.button key={d} whileTap={{ scale: 0.91 }}
+                <motion.button key={d} whileTap={{ scale: 0.91 }} whileHover={{ scale: 1.04 }}
                   onClick={() => setDuration(d)}
                   style={{
                     flex: 1, padding: "10px 0", borderRadius: 12,
@@ -520,7 +715,7 @@ function CreationForm({ onSubmit, onCancel }: {
             {VIBES.map(v => {
               const active = vibe === v.label;
               return (
-                <motion.button key={v.label} whileTap={{ scale: 0.91 }}
+                <motion.button key={v.label} whileTap={{ scale: 0.91 }} whileHover={{ scale: 1.04 }}
                   onClick={() => setVibe(active ? "" : v.label)}
                   style={{
                     flexShrink: 0, padding: "8px 14px", borderRadius: 999,
@@ -568,6 +763,7 @@ function CreationForm({ onSubmit, onCancel }: {
         {/* Submit */}
         <motion.button
           whileTap={canSubmit ? { scale: 0.97 } : {}}
+          whileHover={canSubmit ? { scale: 1.01 } : {}}
           onClick={() => {
             if (!canSubmit) return;
             onSubmit({ location, duration, vibe: vibe || undefined, note, locEmoji: getLocEmoji(location) });
@@ -661,6 +857,9 @@ function FlashHangBoard() {
   const handleNotifyToggle = (id: string) =>
     setHangs(prev => prev.map(h => h.id === id ? { ...h, notifyMe: !h.notifyMe } : h));
 
+  const myHang = hangs.find(h => h.memberId === "me");
+  const otherHangs = hangs.filter(h => h.memberId !== "me");
+
   return (
     <div style={{ padding: "0 20px", fontFamily: "Inter, system-ui, sans-serif" }}>
       <AnimatePresence mode="wait">
@@ -671,19 +870,43 @@ function FlashHangBoard() {
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 22 }}>
         <div>
           <h1 style={{
-            margin: 0, color: "#fff",
+            margin: 0,
             fontSize: 38, fontWeight: 900, fontStyle: "italic",
             letterSpacing: "-0.04em", lineHeight: 1.05,
-            textShadow: "0 0 40px rgba(168,85,247,0.3)",
+            background: "linear-gradient(135deg, #ffffff 10%, #c084fc 55%, #f0abfc 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
           }}>
             Flash Hangs.
           </h1>
-          <p style={{
-            margin: "5px 0 0", color: "#374151", fontSize: 10,
-            fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em",
-          }}>
-            Drop in · Show up · Connect
-          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
+            <p style={{
+              margin: 0, color: "#374151", fontSize: 10,
+              fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em",
+            }}>
+              Drop in · Show up · Connect
+            </p>
+            <motion.span
+              key={hangs.length}
+              initial={{ scale: 0.7, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 22 }}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 4,
+                background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.22)",
+                color: "#4ade80", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 999,
+                letterSpacing: "0.06em", textTransform: "uppercase",
+              }}
+            >
+              <motion.div
+                animate={{ opacity: [0.4, 1, 0.4] }}
+                transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                style={{ width: 5, height: 5, borderRadius: "50%", background: "#4ade80", flexShrink: 0 }}
+              />
+              {hangs.length} live
+            </motion.span>
+          </div>
         </div>
 
         <AnimatePresence mode="wait">
@@ -743,20 +966,44 @@ function FlashHangBoard() {
 
       {/* Cards */}
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {/* My hang */}
         <AnimatePresence initial={false}>
-          {hangs.length === 0 ? (
+          {myHang && (
+            <HangCard
+              key={myHang.id} hang={myHang} index={0}
+              onJoin={handleJoin} onBoost={handleBoost}
+              onCancel={handleCancel} onToast={showToast}
+              onNotifyToggle={handleNotifyToggle}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Divider */}
+        <AnimatePresence>
+          {myHang && otherHangs.length > 0 && (
+            <SectionDivider key="divider" label="Others nearby" />
+          )}
+        </AnimatePresence>
+
+        {/* Other hangs */}
+        <AnimatePresence initial={false}>
+          {otherHangs.length === 0 && !myHang ? (
             <motion.div key="empty"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ textAlign: "center", padding: "60px 0", color: "#374151" }}
+              style={{ textAlign: "center", padding: "60px 0" }}
             >
-              <div style={{ fontSize: 40, marginBottom: 12 }}>⚡</div>
-              <div style={{ fontSize: 14, fontWeight: 600 }}>No active hangs right now.</div>
-              <div style={{ fontSize: 13, marginTop: 4 }}>Be the first to drop one!</div>
+              <motion.div
+                animate={{ scale: [1, 1.15, 1], rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                style={{ fontSize: 44, marginBottom: 12, display: "inline-block" }}
+              >⚡</motion.div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#374151" }}>No active hangs right now.</div>
+              <div style={{ fontSize: 13, color: "#1f2937", marginTop: 4 }}>Be the first to drop one!</div>
             </motion.div>
           ) : (
-            hangs.map((hang, i) => (
+            otherHangs.map((hang, i) => (
               <HangCard
-                key={hang.id} hang={hang} index={i}
+                key={hang.id} hang={hang} index={myHang ? i + 1 : i}
                 onJoin={handleJoin} onBoost={handleBoost}
                 onCancel={handleCancel} onToast={showToast}
                 onNotifyToggle={handleNotifyToggle}
@@ -771,6 +1018,8 @@ function FlashHangBoard() {
 
 /* ─── App ────────────────────────────────────────────────── */
 export default function App() {
+  const hangCount = INITIAL_HANGS.length + 1;
+
   return (
     <div style={{
       background: "#060409",
@@ -782,35 +1031,16 @@ export default function App() {
       position: "relative",
       overflow: "hidden",
     }}>
-      {/* Ambient background glows */}
+      <FloatingOrbs />
+
+      {/* Subtle noise grain overlay */}
       <div style={{
-        position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden",
-      }}>
-        {/* Top-left purple orb */}
-        <div style={{
-          position: "absolute", top: -120, left: -100,
-          width: 480, height: 480,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(124,58,237,0.28) 0%, transparent 70%)",
-          filter: "blur(10px)",
-        }} />
-        {/* Bottom-right fuchsia orb */}
-        <div style={{
-          position: "absolute", bottom: -80, right: -60,
-          width: 420, height: 420,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(217,70,239,0.2) 0%, transparent 70%)",
-          filter: "blur(10px)",
-        }} />
-        {/* Center subtle glow */}
-        <div style={{
-          position: "absolute", top: "35%", left: "50%",
-          transform: "translateX(-50%)",
-          width: 600, height: 300,
-          background: "radial-gradient(ellipse, rgba(124,58,237,0.08) 0%, transparent 70%)",
-          filter: "blur(20px)",
-        }} />
-      </div>
+        position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E")`,
+        backgroundRepeat: "repeat",
+        backgroundSize: "128px 128px",
+        opacity: 0.4,
+      }} />
 
       {/* Main card */}
       <motion.div
@@ -820,32 +1050,42 @@ export default function App() {
         style={{
           position: "relative", zIndex: 1,
           width: "100%", maxWidth: 430,
-          background: "rgba(12, 8, 20, 0.82)",
+          background: "rgba(12, 8, 20, 0.85)",
           border: "1px solid rgba(168,85,247,0.18)",
           borderRadius: 28,
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
+          backdropFilter: "blur(28px)",
+          WebkitBackdropFilter: "blur(28px)",
           boxShadow: [
             "0 0 0 1px rgba(255,255,255,0.04)",
-            "0 24px 80px rgba(0,0,0,0.7)",
-            "0 0 80px rgba(124,58,237,0.12)",
-            "inset 0 1px 0 rgba(255,255,255,0.06)",
+            "0 24px 80px rgba(0,0,0,0.75)",
+            "0 0 100px rgba(124,58,237,0.14)",
+            "inset 0 1px 0 rgba(255,255,255,0.07)",
             "inset 0 -1px 0 rgba(0,0,0,0.3)",
           ].join(", "),
-          paddingTop: 32,
-          paddingBottom: 28,
           overflow: "hidden",
         }}
       >
-        {/* Subtle gradient shimmer across top of card */}
+        {/* Shimmer top border */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0,
           height: 1,
-          background: "linear-gradient(90deg, transparent, rgba(168,85,247,0.5), rgba(217,70,239,0.5), transparent)",
+          background: "linear-gradient(90deg, transparent, rgba(168,85,247,0.6), rgba(217,70,239,0.6), transparent)",
           pointerEvents: "none",
         }} />
 
-        <FlashHangBoard />
+        {/* Festival ticker tape */}
+        <FestivalTicker hangCount={hangCount} />
+
+        <div style={{ paddingTop: 28, paddingBottom: 28 }}>
+          <FlashHangBoard />
+        </div>
+
+        {/* Bottom fade gradient */}
+        <div style={{
+          position: "absolute", bottom: 0, left: 0, right: 0,
+          height: 40, pointerEvents: "none",
+          background: "linear-gradient(to top, rgba(12,8,20,0.6), transparent)",
+        }} />
       </motion.div>
     </div>
   );
