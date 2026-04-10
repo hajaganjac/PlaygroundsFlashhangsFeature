@@ -77,9 +77,11 @@ function durationToMinutes(d: string): number {
   return 60;
 }
 
-/* ─── Toast ──────────────────────────────────────────────── */
+/* ─── Toast ──��───────────────────────────────────────────── */
 function Toast({ message, onDone }: { message: string; onDone: () => void }) {
   useEffect(() => { const t = setTimeout(onDone, 2800); return () => clearTimeout(t); }, [onDone]);
+  const el = typeof document !== "undefined" ? document.body : null;
+  if (!el) return null;
   return createPortal(
     <AnimatePresence>
       <motion.div
@@ -101,7 +103,7 @@ function Toast({ message, onDone }: { message: string; onDone: () => void }) {
         {message}
       </motion.div>
     </AnimatePresence>,
-    document.body
+    el
   );
 }
 
@@ -514,7 +516,7 @@ function CreationForm({ onSubmit, onCancel }: {
           <div style={{ fontSize: 10, fontWeight: 700, color: "#6b7280", letterSpacing: "0.12em", marginBottom: 10 }}>
             🎭 WHAT'S THE VIBE?
           </div>
-          <div style={{ display: "flex", gap: 7, overflowX: "auto", paddingBottom: 3, scrollbarWidth: "none", msOverflowStyle: "none" }}>
+          <div style={{ display: "flex", gap: 7, overflowX: "auto", paddingBottom: 3, scrollbarWidth: "none" } as React.CSSProperties}>
             {VIBES.map(v => {
               const active = vibe === v.label;
               return (
