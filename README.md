@@ -1,5 +1,11 @@
-THIS GIT REPOSITORY CONTAINES THE ORIGINAL CODE FOR THE FLASH HANGS FEATURE 
 
-FOR EASY PREVIEW VIEW THIS LINK : https://playgrounds-flashhangs-feature.vercel.app/
+  # Enhance Smoothness
 
-The initial idea has been worked out into a displayable prototype without all the app components. If the prototype is up to standard the version is immediatly appliable to the existing playgrounds app. 
+  This is a code bundle for Enhance Smoothness. The original project is available at https://www.figma.com/design/2HWBo1nf59mpFiPkZjlm4u/Enhance-Smoothness.
+
+  ## Running the code
+
+  Run `npm i` to install the dependencies.
+
+  Run `npm run dev` to start the development server.
+  
