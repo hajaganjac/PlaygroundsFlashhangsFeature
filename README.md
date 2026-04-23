@@ -1,11 +1,17 @@
+This project presents the Flash Hangs feature, designed for the We Are Playgrounds networking tool. The goal of this feature is to make networking during events more natural, fast, and accessible. The current networking tool is not used as expected, not because it lacks functionality, but because it does not fit how users behave during events. Users are often focused on talks, inspiration, and the overall atmosphere, and are not willing to spend time searching for people or starting conversations without context. Flash Hangs was created as a response to this problem by reducing both the technical and social barriers of networking.
 
-  # Enhance Smoothness
+Flash Hangs allows users to create or join spontaneous meetups during the event. These meetups are based on a clear context, such as a shared interest, topic, or location. For example, a user might see a message like “3 people talking about animation near Stage B.” This gives immediate clarity about what is happening, where it is happening, and who is involved. Based on this, the user can quickly decide whether the situation is relevant and join instantly. The feature is designed to be simple and fast, avoiding unnecessary steps or complex setup. This is important because users do not want to spend time inside an app during a live event. They expect something that works immediately and supports their experience instead of interrupting it.
 
-  This is a code bundle for Enhance Smoothness. The original project is available at https://www.figma.com/design/2HWBo1nf59mpFiPkZjlm4u/Enhance-Smoothness.
+The project is built using standard web technologies, including HTML, CSS, and JavaScript. Depending on the version, additional tools such as React, Vite, or Node.js may be used for development and structure. The focus of the project is not on complex technical architecture, but on demonstrating a clear and working UX concept.
 
-  ## Running the code
+To run the project, first clone or download the repository from GitHub. After opening the project folder, the easiest way to run it is by using Visual Studio Code with the Live Server extension. By right-clicking the index.html file and selecting “Open with Live Server,” the project will start and open automatically in the browser. If the project uses a Node.js setup, you first need to install the dependencies using npm install and then start the development server with npm run dev or npm start. After this, the project can be accessed in the browser via localhost, usually on port 5173, depending on the setup.
 
-  Run `npm i` to install the dependencies.
+The structure of the project is kept simple and clear. It typically consists of a main index.html file, a stylesheet, and a JavaScript file, supported by folders such as assets or components if needed. This structure supports readability and easy iteration during development.
 
-  Run `npm run dev` to start the development server.
-  
+Several key design decisions were made during the creation of this feature. The first is minimizing interaction. Users should be able to join a Flash Hang with as few steps as possible. The second is providing clear context before interaction, so users understand who they are meeting and why. The third is supporting spontaneous use, meaning the feature fits naturally into the flow of the event instead of requiring planning. Finally, the feature reduces social pressure by allowing users to join small groups instead of approaching individuals directly.
+
+This project is currently a prototype and has some limitations. It does not include a backend connection, real-time updates, or persistent user accounts. The focus is on demonstrating the concept and validating the user experience rather than delivering a fully finished product.
+
+For future improvements, the feature could be extended with real-time data updates, integration into the full Playgrounds app, user profiles with portfolio content, and notifications that highlight active Flash Hangs during the event. These additions would strengthen both usability and adoption.
+
+This project was created by Harun Jaganjac as part of the ICT Interactive Media program at Fontys University of Applied Sciences. It is part of a broader UX redesign project focused on improving the Playgrounds networking experience through research-driven design decisions.
